@@ -1,0 +1,8 @@
+{
+    "email": "wallet.test@example.com",
+    "telephone": "+237690000001",
+    "prenom": "Wallet",
+    "nom": "Test",
+    "password": "UnMotDePasseFort2026!",
+    "password_confirmation": "UnMotDePasseFort2026!"
+}
