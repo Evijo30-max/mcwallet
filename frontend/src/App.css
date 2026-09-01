@@ -1,78 +1,752 @@
-.login-page {
+
+/* =========================================================
+   STRUCTURE PRINCIPALE
+   ========================================================= */
+
+.app-layout {
+  display: flex;
   min-height: 100vh;
+  background: #f5f7fb;
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  margin-left: 250px;
+}
+
+.page-content {
+  padding: 32px;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  width: 250px;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 28px 16px;
+
+  background: #ffffff;
+  border-right: 1px solid #e8ebf1;
+}
+
+
+/* Logo */
+
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  padding: 0 12px;
+  margin-bottom: 40px;
+
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.sidebar-logo-mark {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 10px;
+
+  background: #1f6feb;
+  color: #ffffff;
+
+  font-size: 18px;
+  font-weight: 800;
 }
 
-.login-card {
-  width: 100%;
-  max-width: 430px;
-  padding: 40px;
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.08);
+
+/* Navigation */
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.login-header {
-  text-align: center;
-  margin-bottom: 32px;
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+
+  padding: 12px 14px;
+
+  border-radius: 10px;
+
+  color: #667085;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
-.login-header h1 {
+.sidebar-link:hover {
+  background: #f5f8ff;
+  color: #1f6feb;
+}
+
+.sidebar-link.active {
+  background: #edf4ff;
+  color: #1f6feb;
+  font-weight: 600;
+}
+
+
+/* Footer sidebar */
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 15px 12px;
+}
+
+.sidebar-footer p {
+  margin: 0 0 4px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sidebar-footer span {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+  min-height: 82px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 18px 32px;
+
+  background: #ffffff;
+  border-bottom: 1px solid #e8ebf1;
+}
+
+
+/* Titre */
+
+.header-title h2 {
+  margin: 0 0 4px;
+
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.header-title p {
   margin: 0;
-  font-size: 34px;
+
+  color: #98a2b3;
+
+  font-size: 13px;
 }
 
-.login-header p {
-  margin-top: 8px;
+
+/* Actions */
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+
+/* Notification */
+
+.notification-button {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background: transparent;
   color: #667085;
 }
 
-.form-group {
-  margin-bottom: 20px;
+.notification-button:hover {
+  background: #f5f7fb;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
+.notification-dot {
+  position: absolute;
+
+  top: 8px;
+  right: 8px;
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #1f6feb;
+  border: 2px solid #ffffff;
+}
+
+
+/* Utilisateur */
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+
+  background: #edf4ff;
+  color: #1f6feb;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.header-user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header-user-info strong {
+  font-size: 13px;
   font-weight: 600;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 13px 14px;
-  border: 1px solid #d0d5dd;
+.header-user-info span {
+  max-width: 180px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #98a2b3;
+
+  font-size: 11px;
+}
+
+
+/* Déconnexion */
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+
+  border: 0;
   border-radius: 10px;
-  outline: none;
+
+  background: transparent;
+  color: #667085;
 }
 
-.form-group input:focus {
-  border-color: #3448c5;
+.logout-button:hover {
+  background: #f5f7fb;
+  color: #d92d20;
 }
 
-.login-button {
-  width: 100%;
-  border: none;
-  padding: 14px;
-  border-radius: 10px;
-  background: #172033;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 800px) {
+  .sidebar {
+    width: 72px;
+    padding: 20px 10px;
+  }
+
+  .main-area {
+    margin-left: 72px;
+  }
+
+  .sidebar-logo {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .sidebar-logo span:last-child {
+    display: none;
+  }
+
+  .sidebar-link {
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .sidebar-link span {
+    display: none;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .page-content {
+    padding: 20px;
+  }
+
+  .header {
+    padding: 16px 20px;
+  }
+
+  .header-user-info {
+    display: none;
+  }
 }
 
-.login-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+@media (max-width: 500px) {
+  .main-area {
+    margin-left: 0;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .header {
+    min-height: 70px;
+  }
+
+  .page-content {
+    padding: 16px;
+  }
 }
 
-.login-error {
-  margin-bottom: 16px;
-  padding: 12px;
-  border-radius: 8px;
-  background: #fff1f0;
-  color: #c62828;
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   DASHBOARD HEADER
+   ========================================================= */
+
+.dashboard-heading {
+  margin-bottom: 28px;
+}
+
+.dashboard-heading h1 {
+  margin: 0 0 7px;
+
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-heading p {
+  margin: 0;
+
+  color: #667085;
   font-size: 14px;
+}
+
+
+/* =========================================================
+   SOLDE TOTAL
+   ========================================================= */
+
+.total-balance-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 28px 30px;
+
+  margin-bottom: 30px;
+
+  border-radius: 16px;
+
+  background: #1f6feb;
+  color: white;
+
+  box-shadow: 0 8px 25px rgba(31, 111, 235, 0.15);
+}
+
+.total-balance-content {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.total-balance-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  border-radius: 13px;
+
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.total-balance-content p {
+  margin: 0 0 7px;
+
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.total-balance-content h2 {
+  margin: 0 0 6px;
+
+  font-size: 31px;
+  font-weight: 700;
+}
+
+.total-balance-content span {
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.balance-trend {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 8px 12px;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   SECTIONS
+   ========================================================= */
+
+.quick-actions-section,
+.accounts-section,
+.transactions-section {
+  margin-bottom: 34px;
+}
+
+.quick-actions-section h2,
+.section-header h2 {
+  margin: 0;
+
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+.section-header p {
+  margin: 5px 0 0;
+
+  color: #98a2b3;
+
+  font-size: 12px;
+}
+
+.section-header a {
+  color: #1f6feb;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   ACTIONS RAPIDES
+   ========================================================= */
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 15px;
+
+  margin-top: 16px;
+}
+
+.quick-action {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  padding: 18px;
+
+  border: 1px solid #e8ebf1;
+  border-radius: 13px;
+
+  background: white;
+
+  text-align: left;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.quick-action:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 7px 20px rgba(16, 24, 40, 0.07);
+
+  border-color: #d0d5dd;
+}
+
+.quick-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 11px;
+}
+
+.quick-action.deposit .quick-action-icon {
+  background: #ecfdf3;
+  color: #039855;
+}
+
+.quick-action.withdraw .quick-action-icon {
+  background: #fff4ed;
+  color: #e04f16;
+}
+
+.quick-action.convert .quick-action-icon {
+  background: #edf4ff;
+  color: #1f6feb;
+}
+
+.quick-action span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.quick-action strong {
+  font-size: 14px;
+}
+
+.quick-action small {
+  color: #98a2b3;
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   COMPTES
+   ========================================================= */
+
+.currency-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 15px;
+}
+
+.currency-card {
+  padding: 20px;
+
+  border: 1px solid #e8ebf1;
+  border-radius: 14px;
+
+  background: white;
+}
+
+.currency-card-top {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.currency-code {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 11px;
+
+  background: #f2f4f7;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.currency-card-top > span {
+  color: #667085;
+  font-size: 12px;
+}
+
+.currency-balance {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+
+  margin-top: 24px;
+}
+
+.currency-balance span {
+  color: #98a2b3;
+  font-size: 13px;
+}
+
+.currency-balance strong {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.currency-card-footer {
+  margin-top: 16px;
+
+  color: #98a2b3;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+   ========================================================= */
+
+.empty-transactions {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  padding: 45px 20px;
+
+  border: 1px dashed #d0d5dd;
+  border-radius: 14px;
+
+  background: white;
+
+  text-align: center;
+}
+
+.empty-transactions-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 46px;
+  height: 46px;
+
+  margin-bottom: 12px;
+
+  border-radius: 12px;
+
+  background: #f2f4f7;
+  color: #667085;
+}
+
+.empty-transactions h3 {
+  margin: 0 0 5px;
+
+  font-size: 14px;
+}
+
+.empty-transactions p {
+  margin: 0;
+
+  color: #98a2b3;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE DASHBOARD
+   ========================================================= */
+
+@media (max-width: 900px) {
+  .quick-actions,
+  .currency-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .total-balance-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .dashboard-heading h1 {
+    font-size: 23px;
+  }
+
+  .total-balance-card {
+    padding: 22px;
+  }
+
+  .total-balance-content h2 {
+    font-size: 26px;
+  }
+
+  .total-balance-content {
+    align-items: flex-start;
+  }
 }

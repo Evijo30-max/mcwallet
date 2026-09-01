@@ -1,3 +1,4 @@
+
 import axios from "axios";
 
 const api = axios.create({
@@ -7,7 +8,8 @@ const api = axios.create({
   },
 });
 
-// Ajoute automatiquement le token JWT aux requêtes protégées.
+// Ajoute automatiquement le token JWT
+// aux requêtes nécessitant une authentification.
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access_token");
@@ -22,3 +24,4 @@ api.interceptors.request.use(
 );
 
 export default api;
+
