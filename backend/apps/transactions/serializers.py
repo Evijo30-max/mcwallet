@@ -5,7 +5,7 @@ Sérialiseurs de l'application transactions de MCWallet.
 
 from rest_framework import serializers
 
-from .models import Transaction
+from .models import Transaction, Deposit
 from apps.wallets.models import WalletAccount
 
 
@@ -86,4 +86,45 @@ class TransactionSerializer(serializers.ModelSerializer):
             )
 
         return attrs
+
+
+class DepositSerializer(serializers.ModelSerializer):
+    """
+    Serializer utilisé pour afficher une demande de dépôt.
+
+    L'utilisateur ne peut pas choisir lui-même :
+    - son utilisateur
+    - son wallet
+    - le statut
+    - la référence
+
+    Ces informations seront déterminées côté serveur.
+    """
+
+    class Meta:
+        model = Deposit
+        fields = [
+            "id",
+            "reference",
+            "wallet",
+            "montant",
+            "currency",
+            "methode",
+            "statut",
+            "justificatif",
+            "commentaire",
+            "date_creation",
+            "date_modification",
+        ]
+        read_only_fields = [
+            "id",
+            "reference",
+            "wallet",
+            "statut",
+            "commentaire",
+            "date_creation",
+            "date_modification",
+        ]
+
+
 

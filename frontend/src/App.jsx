@@ -1,10 +1,10 @@
-
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 import Login from "./pages/auth/Login";
 import Dashboard from "./pages/dashboard/Dashboard";
-import UserLayout from "./layouts/UserLayout";
+import Deposit from "./pages/deposit/deposit";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -23,30 +23,35 @@ function ProtectedRoute({ children }) {
 function AppRoutes() {
   return (
     <Routes>
-      {/* Page publique */}
-      <Route path="/login" element={<Login />} />
 
-      {/* Zone utilisateur */}
       <Route
+        path="/login"
+        element={<Login />}
+      />
+
+      <Route
+        path="/deposit"
         element={
           <ProtectedRoute>
-            <UserLayout />
+            <Deposit />
           </ProtectedRoute>
         }
-      >
-        <Route path="/" element={<Dashboard />} />
+      />
 
-        {/* Pages que nous allons construire ensuite */}
-        <Route path="/accounts" element={<div>Mes comptes</div>} />
-        <Route path="/transactions" element={<div>Transactions</div>} />
-        <Route path="/deposit" element={<div>Déposer</div>} />
-        <Route path="/withdraw" element={<div>Retirer</div>} />
-        <Route path="/convert" element={<div>Convertir</div>} />
-        <Route path="/profile" element={<div>Profil</div>} />
-      </Route>
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Toute URL inconnue */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route
+        path="*"
+        element={<Navigate to="/" replace />}
+      />
+
     </Routes>
   );
 }

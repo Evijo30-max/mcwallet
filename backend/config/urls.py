@@ -24,4 +24,5 @@ urlpatterns = [
     path("api/users/", include("apps.users.urls")),
     path("api/wallets/", include("apps.wallets.urls")),
     path("api/transactions/", include("apps.transactions.urls")),
+    path("api/deposits/", include("apps.transactions.deposit_urls")),
 ]

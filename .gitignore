@@ -3,3 +3,18 @@ node_modules/
 .DS_Store
 build/
 dist/
+
+
+# Environnement virtuel
+.venv/
+venv/
+env/
+
+# Fichiers Python compilés
+__pycache__/
+*.pyc
+*.pyo
+
+# Base de données locale / clés
+*.sqlite3
+.env
