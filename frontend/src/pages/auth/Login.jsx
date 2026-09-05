@@ -60,7 +60,9 @@ function Login() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Mot de passe</label>
+            <label htmlFor="password">
+              Mot de passe
+            </label>
 
             <input
               id="password"
@@ -73,7 +75,11 @@ function Login() {
             />
           </div>
 
-          {error && <div className="login-error">{error}</div>}
+          {error && (
+            <div className="login-error">
+              {error}
+            </div>
+          )}
 
           <button
             type="submit"

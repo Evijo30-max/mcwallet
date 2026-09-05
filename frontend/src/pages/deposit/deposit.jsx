@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle,
+  FileText,
+  Loader2,
+  Upload,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { getWallets } from "../../services/wallets";
@@ -9,15 +15,27 @@ function Deposit() {
   const navigate = useNavigate();
 
   const [wallets, setWallets] = useState([]);
+
   const [loadingWallets, setLoadingWallets] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(null);
+
+  const [step, setStep] = useState(1);
 
   const [currency, setCurrency] = useState("XAF");
   const [montant, setMontant] = useState("");
   const [methode, setMethode] = useState("Orange Money");
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState(null);
+  const [referencePaiement, setReferencePaiement] =
+    useState("");
+
+  const [nomDeposant, setNomDeposant] =
+    useState("");
+
+  const [justificatif, setJustificatif] =
+    useState(null);
 
   useEffect(() => {
     loadWallets();
@@ -29,10 +47,17 @@ function Deposit() {
       setError("");
 
       const data = await getWallets();
+
       setWallets(data);
+
+      if (data.length > 0) {
+        setCurrency(data[0].currency);
+      }
     } catch (err) {
       console.error(err);
-      setError("Impossible de récupérer vos comptes.");
+      setError(
+        "Impossible de récupérer vos comptes."
+      );
     } finally {
       setLoadingWallets(false);
     }
@@ -42,29 +67,75 @@ function Deposit() {
     (wallet) => wallet.currency === currency
   );
 
-  async function handleSubmit(event) {
-    event.preventDefault();
+  function validateStepOne() {
+    if (!selectedWallet) {
+      setError(
+        "Le compte sélectionné est indisponible."
+      );
+      return false;
+    }
 
+    if (!methode) {
+      setError(
+        "Veuillez choisir une méthode de paiement."
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  function validateStepTwo() {
+    if (!montant || Number(montant) <= 0) {
+      setError(
+        "Veuillez saisir un montant valide."
+      );
+      return false;
+    }
+
+    if (!referencePaiement.trim()) {
+      setError(
+        "Veuillez saisir la référence du paiement."
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  function nextStep() {
     setError("");
 
-    if (!selectedWallet) {
-      setError("Le compte sélectionné est indisponible.");
+    if (step === 1 && !validateStepOne()) {
       return;
     }
 
-    if (!montant || Number(montant) <= 0) {
-      setError("Veuillez saisir un montant valide.");
+    if (step === 2 && !validateStepTwo()) {
       return;
     }
 
+    setStep((current) => current + 1);
+  }
+
+  function previousStep() {
+    setError("");
+    setStep((current) => Math.max(1, current - 1));
+  }
+
+  async function handleSubmit() {
     try {
       setLoading(true);
+      setError("");
 
       const response = await createDeposit({
-        walletId: selectedWallet.id,
-        montant: montant,
-        currency: currency,
-        methode: methode,
+        montant,
+        currency,
+        methode,
+        reference_paiement:
+          referencePaiement,
+        nom_deposant:
+          nomDeposant,
+        justificatif,
       });
 
       setSuccess(response.deposit);
@@ -82,49 +153,84 @@ function Deposit() {
     }
   }
 
+  if (loadingWallets) {
+    return (
+      <main className="deposit-page">
+        <section className="deposit-card">
+          <div className="deposit-loading">
+            <Loader2
+              size={20}
+              className="spin"
+            />
+            Chargement de vos comptes...
+          </div>
+        </section>
+      </main>
+    );
+  }
+
   if (success) {
     return (
       <main className="deposit-page">
         <section className="deposit-card success-card">
+
           <div className="success-icon">
-            <CheckCircle size={48} />
+            <CheckCircle size={52} />
           </div>
 
           <h1>Demande envoyée</h1>
 
           <p>
-            Votre demande de dépôt a bien été enregistrée.
+            Votre demande de dépôt a été
+            enregistrée avec succès.
           </p>
 
           <div className="deposit-summary">
+
             <div>
               <span>Montant</span>
+
               <strong>
-                {Number(success.montant).toLocaleString("fr-FR")}{" "}
+                {Number(
+                  success.montant
+                ).toLocaleString("fr-FR")}{" "}
                 {success.currency}
               </strong>
             </div>
 
             <div>
               <span>Méthode</span>
-              <strong>{success.methode}</strong>
+
+              <strong>
+                {success.methode}
+              </strong>
             </div>
 
             <div>
-              <span>Référence</span>
-              <strong>{success.reference}</strong>
+              <span>Référence MCWallet</span>
+
+              <strong>
+                {success.reference}
+              </strong>
             </div>
 
             <div>
               <span>Statut</span>
-              <strong>En attente de validation</strong>
+
+              <strong>
+                En attente de validation
+              </strong>
             </div>
+
           </div>
 
-          <p className="success-info">
-            Votre solde ne sera crédité qu'après validation de votre
-            dépôt par MCWallet.
-          </p>
+          <div className="success-info">
+            <p>
+              Votre solde n'est pas encore crédité.
+              Un administrateur doit vérifier votre
+              dépôt avant validation.
+            </p>
+          </div>
 
           <button
             className="deposit-button"
@@ -132,6 +238,7 @@ function Deposit() {
           >
             Retour au tableau de bord
           </button>
+
         </section>
       </main>
     );
@@ -151,25 +258,42 @@ function Deposit() {
         </button>
 
         <div className="deposit-header">
-          <h1>Déposer de l'argent</h1>
+          <h1>
+            Déposer de l'argent
+          </h1>
 
           <p>
-            Choisissez le compte à créditer et indiquez le montant
-            que vous souhaitez déposer.
+            Effectuez votre dépôt en quelques étapes.
           </p>
         </div>
 
-        {loadingWallets && (
-          <div className="deposit-loading">
-            <Loader2 size={20} className="spin" />
-            Chargement de vos comptes...
+        <div className="deposit-steps">
+          <span className={step >= 1 ? "active" : ""}>
+            1
+          </span>
+
+          <span className={step >= 2 ? "active" : ""}>
+            2
+          </span>
+
+          <span className={step >= 3 ? "active" : ""}>
+            3
+          </span>
+        </div>
+
+        {error && (
+          <div className="deposit-error">
+            {error}
           </div>
         )}
 
-        {!loadingWallets && (
-          <form onSubmit={handleSubmit}>
+        {step === 1 && (
+          <section>
+
+            <h2>1. Choisir le compte</h2>
 
             <div className="form-group">
+
               <label htmlFor="currency">
                 Compte à créditer
               </label>
@@ -190,48 +314,13 @@ function Deposit() {
                   </option>
                 ))}
               </select>
-            </div>
 
-            <div className="selected-account">
-              <span>Compte sélectionné</span>
-
-              <strong>
-                {currency === "XAF" && "🇨🇲 Franc CFA"}
-                {currency === "USD" && "🇺🇸 Dollar américain"}
-                {currency === "EUR" && "🇪🇺 Euro"}
-              </strong>
             </div>
 
             <div className="form-group">
-              <label htmlFor="montant">
-                Montant du dépôt
-              </label>
 
-              <input
-                id="montant"
-                type="number"
-                min="1"
-                step="0.01"
-                value={montant}
-                onChange={(event) =>
-                  setMontant(event.target.value)
-                }
-                placeholder={
-                  currency === "XAF"
-                    ? "Exemple : 50000"
-                    : "Exemple : 100"
-                }
-                required
-              />
-
-              <small>
-                Devise : {currency}
-              </small>
-            </div>
-
-            <div className="form-group">
               <label htmlFor="methode">
-                Méthode de paiement
+                Moyen de paiement
               </label>
 
               <select
@@ -253,30 +342,235 @@ function Deposit() {
                   Dépôt bancaire
                 </option>
               </select>
+
             </div>
 
-            {error && (
-              <div className="deposit-error">
-                {error}
-              </div>
-            )}
+            <div className="payment-instructions">
+              <h3>
+                Instructions
+              </h3>
+
+              <p>
+                Effectuez d'abord votre paiement
+                avec la méthode sélectionnée.
+              </p>
+
+              <p>
+                Conservez votre reçu ou votre
+                référence de paiement.
+              </p>
+            </div>
 
             <button
-              type="submit"
+              type="button"
               className="deposit-button"
-              disabled={loading}
+              onClick={nextStep}
             >
-              {loading ? (
-                <>
-                  <Loader2 size={18} className="spin" />
-                  Envoi en cours...
-                </>
-              ) : (
-                "Continuer"
-              )}
+              Continuer
             </button>
-          </form>
+
+          </section>
         )}
+
+        {step === 2 && (
+          <section>
+
+            <h2>2. Informations du dépôt</h2>
+
+            <div className="form-group">
+
+              <label htmlFor="montant">
+                Montant
+              </label>
+
+              <input
+                id="montant"
+                type="number"
+                min="0.01"
+                step="0.01"
+                value={montant}
+                onChange={(event) =>
+                  setMontant(event.target.value)
+                }
+                placeholder={
+                  currency === "XAF"
+                    ? "Exemple : 50000"
+                    : "Exemple : 100"
+                }
+              />
+
+              <small>
+                Devise : {currency}
+              </small>
+
+            </div>
+
+            <div className="form-group">
+
+              <label htmlFor="referencePaiement">
+                Référence du paiement
+              </label>
+
+              <input
+                id="referencePaiement"
+                type="text"
+                value={referencePaiement}
+                onChange={(event) =>
+                  setReferencePaiement(
+                    event.target.value
+                  )
+                }
+                placeholder="Exemple : OM123456789"
+              />
+
+            </div>
+
+            <div className="form-group">
+
+              <label htmlFor="nomDeposant">
+                Nom du déposant
+              </label>
+
+              <input
+                id="nomDeposant"
+                type="text"
+                value={nomDeposant}
+                onChange={(event) =>
+                  setNomDeposant(
+                    event.target.value
+                  )
+                }
+                placeholder="Nom utilisé lors du paiement"
+              />
+
+            </div>
+
+            <div className="deposit-actions">
+
+              <button
+                type="button"
+                className="back-button"
+                onClick={previousStep}
+              >
+                Retour
+              </button>
+
+              <button
+                type="button"
+                className="deposit-button"
+                onClick={nextStep}
+              >
+                Continuer
+              </button>
+
+            </div>
+
+          </section>
+        )}
+
+        {step === 3 && (
+          <section>
+
+            <h2>3. Justificatif</h2>
+
+            <p>
+              Ajoutez le reçu ou justificatif
+              correspondant à votre paiement.
+            </p>
+
+            <label
+              htmlFor="justificatif"
+              className="file-upload"
+            >
+              <Upload size={24} />
+
+              <span>
+                {justificatif
+                  ? justificatif.name
+                  : "Choisir un justificatif"}
+              </span>
+
+              <input
+                id="justificatif"
+                type="file"
+                accept="image/*,.pdf"
+                onChange={(event) =>
+                  setJustificatif(
+                    event.target.files?.[0] ||
+                    null
+                  )
+                }
+              />
+            </label>
+
+            <div className="deposit-summary">
+
+              <div>
+                <span>Compte</span>
+                <strong>{currency}</strong>
+              </div>
+
+              <div>
+                <span>Montant</span>
+                <strong>
+                  {Number(
+                    montant || 0
+                  ).toLocaleString("fr-FR")}{" "}
+                  {currency}
+                </strong>
+              </div>
+
+              <div>
+                <span>Méthode</span>
+                <strong>{methode}</strong>
+              </div>
+
+              <div>
+                <span>Référence paiement</span>
+                <strong>
+                  {referencePaiement}
+                </strong>
+              </div>
+
+            </div>
+
+            <div className="deposit-actions">
+
+              <button
+                type="button"
+                className="back-button"
+                onClick={previousStep}
+              >
+                Retour
+              </button>
+
+              <button
+                type="button"
+                className="deposit-button"
+                disabled={loading}
+                onClick={handleSubmit}
+              >
+                {loading ? (
+                  <>
+                    <Loader2
+                      size={18}
+                      className="spin"
+                    />
+                    Envoi...
+                  </>
+                ) : (
+                  <>
+                    <FileText size={18} />
+                    Envoyer la demande
+                  </>
+                )}
+              </button>
+
+            </div>
+
+          </section>
+        )}
+
       </section>
     </main>
   );

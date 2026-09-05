@@ -1,31 +1,47 @@
 import api from "./api";
 
-/**
- * Crée une nouvelle demande de dépôt.
- *
- * La demande reste en attente jusqu'à sa validation
- * par l'administration.
- */
-export async function createDeposit({
-  walletId,
-  montant,
-  currency,
-  methode,
-}) {
-  const response = await api.post("/deposits/", {
-    wallet: walletId,
-    montant,
-    currency,
-    methode,
-  });
-
-  return response.data;
+export async function getDeposits() {
+  const response = await api.get("/transactions/deposits/");
+  return response.data.deposits;
 }
 
-/**
- * Récupère les demandes de dépôt de l'utilisateur connecté.
- */
-export async function getDeposits() {
-  const response = await api.get("/deposits/");
-  return response.data.deposits;
+export async function getDeposit(id) {
+  const response = await api.get(`/transactions/deposits/${id}/`);
+  return response.data.deposit;
+}
+
+export async function createDeposit(data) {
+  const formData = new FormData();
+
+  formData.append("montant", data.montant);
+  formData.append("currency", data.currency);
+  formData.append("methode", data.methode);
+
+  if (data.reference_paiement) {
+    formData.append(
+      "reference_paiement",
+      data.reference_paiement
+    );
+  }
+
+  if (data.nom_deposant) {
+    formData.append(
+      "nom_deposant",
+      data.nom_deposant
+    );
+  }
+
+  if (data.justificatif) {
+    formData.append(
+      "justificatif",
+      data.justificatif
+    );
+  }
+
+  const response = await api.post(
+    "/transactions/deposits/",
+    formData
+  );
+
+  return response.data;
 }
